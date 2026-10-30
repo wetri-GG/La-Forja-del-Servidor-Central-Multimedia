@@ -42,4 +42,9 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
+    // Dependencia principal del reproductor
+    implementation("androidx.media3:media3-exoplayer:1.5.1") // Usa la versión estable más reciente
+
+    // Dependencia necesaria para el contenedor PlayerView y controles XML
+    implementation("androidx.media3:media3-ui:1.5.1")
 }
