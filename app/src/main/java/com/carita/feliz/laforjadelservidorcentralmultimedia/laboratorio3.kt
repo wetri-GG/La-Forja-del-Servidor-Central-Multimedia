@@ -13,6 +13,8 @@ import androidx.media3.ui.PlayerView
 import android.net.Uri
 import android.view.View
 import android.widget.AdapterView
+import androidx.media3.datasource.RawResourceDataSource
+
 
 
 
@@ -21,9 +23,9 @@ class laboratorio3 : AppCompatActivity() {
     private var player: ExoPlayer? = null
     private lateinit var playerView: PlayerView
     private val canales = mapOf(
-        "Minas Tirith" to "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
-        "Isengard" to "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
-        "Rivendell" to "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
+        "Minas Tirith" to R.raw.minas_tirith,
+        "Isengard" to R.raw.isengard,
+        "Rivendell" to R.raw.rivendell
     )
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,14 +36,15 @@ class laboratorio3 : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
         playerView = findViewById(R.id.Player)
         val spinnerCanales: Spinner = findViewById(R.id.Spinner)
         spinnerCanales.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val puestoSeleccionado = parent?.getItemAtPosition(position).toString()
-                val url = canales[puestoSeleccionado]
-                if (!url.isNullOrEmpty()) {
-                    initializePlayer(url)
+                val rawResId = canales[puestoSeleccionado]
+                if (rawResId != null) {
+                    initializePlayer(rawResId)
                 }
             }
 
@@ -57,7 +60,7 @@ class laboratorio3 : AppCompatActivity() {
         spinnerCanales.adapter = adapter
 
     }
-    private fun initializePlayer(url: String) {
+    private fun initializePlayer(rawResId: Int) {
         if (player == null) {
             player = ExoPlayer.Builder(this).build()
         }
@@ -65,7 +68,9 @@ class laboratorio3 : AppCompatActivity() {
         // Vincula siempre el PlayerView al reproductor
         playerView.player = player
 
-        val mediaItem = MediaItem.fromUri(Uri.parse(url))
+
+        val uri = Uri.parse("android.resource://$packageName/$rawResId")
+        val mediaItem = MediaItem.fromUri(uri)
         player?.setMediaItem(mediaItem)
         player?.prepare()
         player?.playWhenReady = true
